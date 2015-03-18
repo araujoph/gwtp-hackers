@@ -1,12 +1,12 @@
-Not too long ago, I started using GWT and GWTP and found it pretty hard to understand their event system.
+Not so long ago, I started using GWT and GWTP and found pretty hard to understand their event system.
 
-I can still barely find anything recent about this, so here I am writing a post that hopefully will help others. Disclaimer: There many ways to achieve what I do in this post, but this is the way I prefer.
+I can't barely find anything recent about this, so I decided to write a post that will hopefully help others. Disclaimer: There are many ways to achieve what I do in this post, but this is the way I prefer.
 
 All right! Let's demonstrate how events and the event bus work by creating a CSI-Hacking Dashboard. You can get the code here : https://github.com/Pacane/gwtp-hackers
 
 We have <code>ComputerWidget</code>, a <code>HackerWidget</code> and a root Presenter that holds/creates other widgets. We also have a <code>ComputerHackedEvent</code> and <code>ComputerHackedHandler</code>. The event will be raised to signal the computers got hacked, and the handler code will be executed after that.
 
-Here's the classic implementation of a GWT event. Here our event will only carry the hacker's name.
+Here's the classic implementation of a GWT event. Our event will only carry the hacker's name.
 
 [sourcecode language="java"]
 public class ComputerHackedEvent extends GwtEvent<ComputerHackedEvent.ComputerHackedHandler> {
@@ -94,7 +94,7 @@ public class HackerWidget extends PresenterWidget<MyView> implements HackerUiHan
 }
 [/sourcecode]
 
-So we have a button, and when we click on it, it raises an event. There are a couple of ways to raise an event, but the one I usually use, is the static <code>fire()</code> method on the event. I'll talk about the other ways of firing event later on, don't worry.
+So now, we have a button, and when we click on it, it raises an event. There are a couple of ways to raise an event, but the one I usually use, is the static <code>fire()</code> method on the event. Don't worry, I'll talk about the other ways of firing event later on.
 
 Now we have to handle the event somewhere. We want to know when the computers get hacked, so we'll represent the computers with the <code>ComputerWidget</code>. Its role will be to print in the console when it gets hacked, and by which hacker. Here's the presenter code:
 
@@ -314,7 +314,7 @@ presenterWidget.addVisibleHandler(eventType, handler)
 presenterWidget.fireEvent(event)
 [/sourcecode]
 
-Confused yet? I can say I was after seeing this. If you dig down you can see that a presenter widget gets an event bus injected and delegates most of its job to it. The only difference is that GWTP's manages the handler registrations with its lifecycle (ie: when a presenter gets unbound, the registered handlers get cleared). Also, if you dig for the <code>fireEvent</code> method, you'll see GWTP delegates to <code>eventBus.fireEventFromSource()</code>. You may want to call the original <code>fireEvent()</code> if you want to match the following case (taken from the javadoc) "Fires the event from no source. Only unfiltered handlers will receive it". Honestly, I've never faced that situation.
+Confused yet? I can't say I wasn't after seeing this. If you dig down you can see that a presenter widget gets an event bus injected and delegates most of its job to it. The only difference is that GWTP's manages the handler registrations with its lifecycle (ie: when a presenter gets unbound, the registered handlers get cleared). Also, if you dig for the <code>fireEvent</code> method, you'll see GWTP delegates to <code>eventBus.fireEventFromSource()</code>. You may want to call the original <code>fireEvent()</code> if you want to match the following case (taken from the javadoc) "Fires the event from no source. Only unfiltered handlers will receive it". Honestly, I've never faced that situation.
 
 Here's my cheat sheet of events in GWTP:
 
